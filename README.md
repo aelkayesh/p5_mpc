@@ -6,16 +6,23 @@ Model
 In this project, we used basic kinematic vehicle model: we (and simulator) do not have information about vehicle mass, engine, tires, road surface etc. We know (receive from the simulator):
 
 vehicle position at moment t (xt, yt) - and other moments
+
 vehicle velocity v
+
 course angle ψ
+
 We can control our vehicle using two controls variables: throttle (used both for gas pedal and brakes as a single acceleration control) and steering angle δ.
 
 Knowing current vehicle state, it is easy to predict the next one, in a dt seconds:
 
 xt+1 = xt + vt * cos(ψt) * dt
+
 yt+1 = yt + vt * sin(ψt) * dt
+
 ψt+1 = ψt + vt / Lf * δt * dt
+
 vt+1 = vt + at * dt
+
 Where Lf is the distance between the vehicle's center of gravity and its front (estimated as 2.67 meters for current project).
 
 MPC
