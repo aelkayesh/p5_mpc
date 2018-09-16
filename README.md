@@ -2,6 +2,7 @@
 Self-Driving Car Engineer Nanodegree Program
 
 Model
+
 In this project, we used basic kinematic vehicle model: we (and simulator) do not have information about vehicle mass, engine, tires, road surface etc. We know (receive from the simulator):
 
 vehicle position at moment t (xt, yt) - and other moments
@@ -18,6 +19,7 @@ vt+1 = vt + at * dt
 Where Lf is the distance between the vehicle's center of gravity and its front (estimated as 2.67 meters for current project).
 
 MPC
+
 To control the vehicle, we used Model Predictive Controller (MPC), which optimized control variables (acceleration and steering angle) with regard to the provided cost functions.
 
 As MPC operates in vehicle coordinate system, and simulator provides us with values in it's own 'world' coordinates, coordinate transformation is performed before sending values to the MPC (lines 107-113 of the main.cpp).
@@ -31,6 +33,7 @@ Another set of hyper-parameters with which we can affect MPC is the choice of co
 My cost function is composed of the sqaured root of errors of concerned components, in addition to setting a high cost for changing steering angle or acceleration suddenly in big values.
 
 Delay
+
 To account for the delay in the control loop, I send to the MPC not the current vehicle state, but state in a delay seconds, predicted by the kinematic model (lines 101-104 of the main.cpp).
 
 ##Reflections on the solution
