@@ -1,7 +1,40 @@
 # CarND-Controls-MPC
 Self-Driving Car Engineer Nanodegree Program
 
----
+Model
+In this project, we used basic kinematic vehicle model: we (and simulator) do not have information about vehicle mass, engine, tires, road surface etc. We know (receive from the simulator):
+
+vehicle position at moment t (xt, yt) - and other moments
+vehicle velocity v
+course angle ψ
+We can control our vehicle using two controls variables: throttle (used both for gas pedal and brakes as a single acceleration control) and steering angle δ.
+
+Knowing current vehicle state, it is easy to predict the next one, in a dt seconds:
+
+xt+1 = xt + vt * cos(ψt) * dt
+yt+1 = yt + vt * sin(ψt) * dt
+ψt+1 = ψt + vt / Lf * δt * dt
+vt+1 = vt + at * dt
+Where Lf is the distance between the vehicle's center of gravity and its front (estimated as 2.67 meters for current project).
+
+MPC
+To control the vehicle, we used Model Predictive Controller (MPC), which optimized control variables (acceleration and steering angle) with regard to the provided cost functions.
+
+As MPC operates in vehicle coordinate system, and simulator provides us with values in it's own 'world' coordinates, coordinate transformation is performed before sending values to the MPC (lines 107-113 of the main.cpp).
+
+Two of the critical parameters for the MPC are number of points to look into the future N and distance between these points dt:
+
+If N is too big and dt is too small, where a really big number of steps to computer Xs,Ys for and that degrades performance a lot that the vehicule won't even move. If N is too small and dt is too small, the model won't see enough points in the future to predict the right actuator to manipulate. After many trials of setting different values for N and dt, I found that a fast update step represented by dt = 0.001 was essential to keep the car smooth at speed up to 30 mph. N was set to 25 at this point and the car seemed to move nicely and comfortablly. The only thing with this very little dt is that the points generated from MPC are all in the range of 0.xx like 0.05 and 0.002 ...etc. To properly visulize these points I had to multiply each point with a scaling factor, at this point it's set to 100;
+
+Another set of hyper-parameters with which we can affect MPC is the choice of cost function: which components to add and with which weights.
+
+My cost function is composed of the sqaured root of errors of concerned components, in addition to setting a high cost for changing steering angle or acceleration suddenly in big values.
+
+Delay
+To account for the delay in the control loop, I send to the MPC not the current vehicle state, but state in a delay seconds, predicted by the kinematic model (lines 101-104 of the main.cpp).
+
+##Reflections on the solution
+It would be nice to see the car driving at higher speeds, for this, extra effort is needed to find more accurate cost function and correct setting of N and dt.
 
 ## Dependencies
 
